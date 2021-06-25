@@ -209,61 +209,20 @@ class MainActivity : AppCompatActivity() {
             numButtonAction(9)
         }
 
-
-        /** 演算子ボタンが押された時の処理をまとめた関数 */
-        fun calcButtonAction(op: Char) {
-            operatorArea.text = op.toString()
-            if (flagOperation == Flag.NotPressed) {
-                if (flagEqual == Flag.Pressed) {
-                    // 実行ボタンが押された直後に、演算子ボタンが押された場合
-                    valueList.add(textArea.text.toString().toDouble())
-                } else {
-                    // 数字ボタンが押された後、演算子ボタンが押された場合
-                    valueList.add(value)
-                }
-                operatorList.add(op)
-                value = 0.0
-                flagDecimal = Flag.NotPressed
-                flagOperation = Flag.Pressed
-            } else {
-                // 演算子ボタンが2回連続で押された場合
-                operatorList.removeAt(operatorList.size - 1)
-                operatorList.add(op)
-            }
-        }
-
-        /** 演算子ボタンが押された時の処理 */
-        buttonPlus.setOnClickListener {
-            calcButtonAction('+')
-        }
-
-        buttonMinus.setOnClickListener {
-            calcButtonAction('-')
-        }
-
-        buttonTime.setOnClickListener {
-            calcButtonAction('×')
-        }
-
-        buttonDivide.setOnClickListener {
-            calcButtonAction('÷')
-        }
-
-        /** 実行ボタン"="が押された時の処理 */
+        /** 計算処理をまとめた関数 */
         // 【0除算エラー対応】
         // Int_ver.では try-catchでArithmeticExceptionをキャッチする。
         // Double_ver.では Double.isInfinite()メソッドを使って、Infinityを判別する。
-        buttonEqual.setOnClickListener {
-            if (valueList.size > 0 && operatorList.size > 0 && flagOperation == Flag.NotPressed) {
-                valueList.add(value)
+        fun equalButtonAction() {
+            valueList.add(value)
+            if (valueList.size > 1) {
+                value = valueList[0]
                 for (i in 0 until valueList.size - 1) {
-                    if (i < operatorList.size) {
-                        when {
-                            operatorList[i] == '+' -> value = valueList[i] + valueList[i + 1]
-                            operatorList[i] == '-' -> value = valueList[i] - valueList[i + 1]
-                            operatorList[i] == '×' -> value = valueList[i] * valueList[i + 1]
-                            operatorList[i] == '÷' -> value = valueList[i] / valueList[i + 1]
-                        }
+                    when {
+                        operatorList[i] == '+' -> value += valueList[i + 1]
+                        operatorList[i] == '-' -> value -= valueList[i + 1]
+                        operatorList[i] == '×' -> value *= valueList[i + 1]
+                        operatorList[i] == '÷' -> value /= valueList[i + 1]
                     }
                 }
                 when {
@@ -294,16 +253,67 @@ class MainActivity : AppCompatActivity() {
                             // バックスペースを使えるようにするため
                             flagDecimal = Flag.Pressed
                         }
-                        value = 0.0
-                        valueList.clear()
-                        operatorList.clear()
-                        flagEqual = Flag.Pressed
-                        flagOperation = Flag.NotPressed
-                        operatorArea.text = null
                     }
                 }
             }
         }
+
+        /** 実行ボタン"="が押された時の処理 */
+        buttonEqual.setOnClickListener {
+            if (valueList.size > 0 && operatorList.size > 0 && flagOperation == Flag.NotPressed) {
+                equalButtonAction()
+                value = 0.0
+                valueList.clear()
+                operatorList.clear()
+                flagEqual = Flag.Pressed
+                flagOperation = Flag.NotPressed
+                operatorArea.text = null
+            }
+        }
+
+
+        /** 演算子ボタンが押された時の処理をまとめた関数 */
+        fun calcButtonAction(op: Char) {
+            operatorArea.text = op.toString()
+            if (flagOperation == Flag.NotPressed) {
+                operatorList.add(op)
+                if (flagEqual == Flag.Pressed) {
+                    // 実行ボタンが押された直後に、演算子ボタンが押された場合
+                    valueList.add(textArea.text.toString().toDouble())
+                } else {
+                    // 数字ボタンが押された後、演算子ボタンが押された場合
+                    equalButtonAction()
+                }
+                value = 0.0
+                flagDecimal = Flag.NotPressed
+                flagOperation = Flag.Pressed
+            } else {
+                if (valueList.isNotEmpty()){
+                    // 演算子ボタンが2回連続で押された場合
+                    operatorList.removeAt(operatorList.size - 1)
+                    operatorList.add(op)
+                }
+            }
+        }
+
+        /** 演算子ボタンが押された時の処理 */
+        buttonPlus.setOnClickListener {
+            calcButtonAction('+')
+        }
+
+        buttonMinus.setOnClickListener {
+            calcButtonAction('-')
+        }
+
+        buttonTime.setOnClickListener {
+            calcButtonAction('×')
+        }
+
+        buttonDivide.setOnClickListener {
+            calcButtonAction('÷')
+        }
+
+
 
         /** バックスペース"→"が押された時の処理 */
         buttonBack.setOnClickListener {
@@ -313,9 +323,7 @@ class MainActivity : AppCompatActivity() {
                     // 小数の場合（数値の最後に小数点がある場合も含む）
                     if (textArea.text.toString().substring(
                             textArea.text.toString().length - 1,
-                            textArea.text.toString().length
-                        ) == "."
-                    ) {
+                            textArea.text.toString().length) == ".") {
                         // 数値の最後が小数点だった場合
                         flagDecimal = Flag.NotPressed
                         textArea.text = textArea.text.toString().dropLast(1)
@@ -352,6 +360,7 @@ class MainActivity : AppCompatActivity() {
             if (flagEqual == Flag.Pressed) {
                 // 実行ボタンが押された直後に、小数点ボタンが押されたら、「0.」を表示する。
                 flagDecimal = Flag.Pressed
+                value = 0.0
                 textArea.text = value.toLong().toString().plus(".")
                 flagEqual = Flag.NotPressed
             } else {
