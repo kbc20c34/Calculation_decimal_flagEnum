@@ -1,0 +1,2 @@
+rootProject.name = "Calculation_decimal_flagEnum"
+include ':app'
