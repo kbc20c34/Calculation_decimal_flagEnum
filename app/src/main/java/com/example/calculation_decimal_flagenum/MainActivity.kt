@@ -215,44 +215,42 @@ class MainActivity : AppCompatActivity() {
         // Double_ver.では Double.isInfinite()メソッドを使って、Infinityを判別する。
         fun equalButtonAction() {
             valueList.add(value)
-            if (valueList.size > 1) {
-                value = valueList[0]
-                for (i in 0 until valueList.size - 1) {
-                    when {
-                        operatorList[i] == '+' -> value += valueList[i + 1]
-                        operatorList[i] == '-' -> value -= valueList[i + 1]
-                        operatorList[i] == '×' -> value *= valueList[i + 1]
-                        operatorList[i] == '÷' -> value /= valueList[i + 1]
-                    }
-                }
+            value = valueList[0]
+            for (i in 0 until valueList.size - 1) {
                 when {
-                    // 0除算エラー対応 Double_ver.
-                    value.isInfinite() -> dialogErrorAction(ErrorName.Arithmetic)
-                    // 整数部分 12桁オーバー対応
-                    value.toLong().toString().length > 12 -> dialogErrorAction(ErrorName.Flow)
-                    // 0同士除算エラー対応
-                    value.isNaN() -> dialogErrorAction(ErrorName.NaN)
+                    operatorList[i] == '+' -> value += valueList[i + 1]
+                    operatorList[i] == '-' -> value -= valueList[i + 1]
+                    operatorList[i] == '×' -> value *= valueList[i + 1]
+                    operatorList[i] == '÷' -> value /= valueList[i + 1]
+                }
+            }
+            when {
+                // 0除算エラー対応 Double_ver.
+                value.isInfinite() -> dialogErrorAction(ErrorName.Arithmetic)
+                // 整数部分 12桁オーバー対応
+                value.toLong().toString().length > 12 -> dialogErrorAction(ErrorName.Flow)
+                // 0同士除算エラー対応
+                value.isNaN() -> dialogErrorAction(ErrorName.NaN)
 
-                    else -> {
-                        if (value - value.toLong().toDouble() == 0.0) {
-                            // 導き出した値が整数の場合
-                            textArea.text = value.toLong().toString()
-                            // バックスペースを使えるようにするため
-                            flagDecimal = Flag.NotPressed
-                        } else {
-                            // 導き出した値が小数の場合
-                            // 最初に、小数部分 12桁オーバー対応 0から数えて11番目の数を四捨五入して、10番目の数までにする。
-                            if (value.toString().length > 12) {
-                                value = (value * 10.0.pow(
-                                    (12 - value.toString().indexOf(".") - 1)
-                                )).roundToLong() / 10.0.pow(
-                                    (12 - value.toString().indexOf(".") - 1)
-                                )
-                            }
-                            textArea.text = value.toString()
-                            // バックスペースを使えるようにするため
-                            flagDecimal = Flag.Pressed
+                else -> {
+                    if (value - value.toLong().toDouble() == 0.0) {
+                        // 導き出した値が整数の場合
+                        textArea.text = value.toLong().toString()
+                        // バックスペースを使えるようにするため
+                        flagDecimal = Flag.NotPressed
+                    } else {
+                        // 導き出した値が小数の場合
+                        // 最初に、小数部分 12桁オーバー対応 0から数えて11番目の数を四捨五入して、10番目の数までにする。
+                        if (value.toString().length > 12) {
+                            value = (value * 10.0.pow(
+                                (12 - value.toString().indexOf(".") - 1)
+                            )).roundToLong() / 10.0.pow(
+                                (12 - value.toString().indexOf(".") - 1)
+                            )
                         }
+                        textArea.text = value.toString()
+                        // バックスペースを使えるようにするため
+                        flagDecimal = Flag.Pressed
                     }
                 }
             }
