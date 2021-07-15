@@ -38,8 +38,8 @@ class MainActivity : AppCompatActivity() {
     /** 小数かどうか把握するための変数 */
     private var flagDecimal = Flag.NotPressed
 
-    fun buttonPress(v: View){
-        when(v.id){
+    fun buttonPress(v: View) {
+        when (v.id) {
             R.id.btn0 -> numButtonAction(0)
             R.id.btn1 -> numButtonAction(1)
             R.id.btn2 -> numButtonAction(2)
@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** ダイアログによるエラー処理　*/
-    private fun dialogErrorAction (eName:ErrorName) {
+    private fun dialogErrorAction(eName: ErrorName) {
         val dialog = AlertDialog.Builder(this)
-        when(eName.name){
+        when (eName.name) {
             "Flow" -> dialog.setTitle(resources.getString(R.string.dialog_FlowErrorTitle))
             "Arithmetic" -> dialog.setTitle(resources.getString(R.string.dialog_ArithmeticErrorTitle))
             "NaN" -> dialog.setTitle(resources.getString(R.string.dialog_NaNErrorTitle))
@@ -114,8 +114,9 @@ class MainActivity : AppCompatActivity() {
         //小数のときは、12桁以上は入力できないようにする。
         if (flagEqual == Flag.NotPressed &&
             flagOperation == Flag.NotPressed &&
-            findViewById<TextView>(R.id.Output).text.toString().length >= 12) {
-            if (flagDecimal == Flag.NotPressed){
+            findViewById<TextView>(R.id.Output).text.toString().length >= 12
+        ) {
+            if (flagDecimal == Flag.NotPressed) {
                 dialogErrorAction(ErrorName.Flow)
             }
         } else {
@@ -131,7 +132,11 @@ class MainActivity : AppCompatActivity() {
             if (flagDecimal == Flag.Pressed) {
                 // 小数の場合
                 // testArea.textのところで+使うことがあまり良くないみたい。
-                findViewById<TextView>(R.id.Output).text = (String.format("%s%s", findViewById<TextView>(R.id.Output).text.toString(), num.toString()))
+                findViewById<TextView>(R.id.Output).text = (String.format(
+                    "%s%s",
+                    findViewById<TextView>(R.id.Output).text.toString(),
+                    num.toString()
+                ))
                 value = findViewById<TextView>(R.id.Output).text.toString().toDouble()
             } else {
                 // 整数の場合
@@ -223,7 +228,7 @@ class MainActivity : AppCompatActivity() {
             flagDecimal = Flag.NotPressed
             flagOperation = Flag.Pressed
         } else {
-            if (valueList.isNotEmpty()){
+            if (valueList.isNotEmpty()) {
                 // 演算子ボタンが2回連続で押された場合
                 operatorList.removeAt(operatorList.size - 1)
                 operatorList.add(op)
@@ -232,25 +237,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** バックスペース"→"が押された時の処理 */
-    private fun backButtonAction(){
+    private fun backButtonAction() {
         // testAreaに0が入っている時は動作しなくて良いから。
         if (findViewById<TextView>(R.id.Output).text.toString() != "0") {
             if (flagDecimal == Flag.Pressed) {
                 // 小数の場合（数値の最後に小数点がある場合も含む）
                 if (findViewById<TextView>(R.id.Output).text.toString().substring(
                         findViewById<TextView>(R.id.Output).text.toString().length - 1,
-                        findViewById<TextView>(R.id.Output).text.toString().length) == ".") {
+                        findViewById<TextView>(R.id.Output).text.toString().length
+                    ) == "."
+                ) {
                     // 数値の最後が小数点だった場合
                     flagDecimal = Flag.NotPressed
-                    findViewById<TextView>(R.id.Output).text = findViewById<TextView>(R.id.Output).text.toString().dropLast(1)
+                    findViewById<TextView>(R.id.Output).text =
+                        findViewById<TextView>(R.id.Output).text.toString().dropLast(1)
                 } else {
                     // 小数の場合  ex.) 3.14
-                    findViewById<TextView>(R.id.Output).text = findViewById<TextView>(R.id.Output).text.toString().dropLast(1)
+                    findViewById<TextView>(R.id.Output).text =
+                        findViewById<TextView>(R.id.Output).text.toString().dropLast(1)
                     value = findViewById<TextView>(R.id.Output).text.toString().toDouble()
                 }
             } else {
                 // 整数の場合
-                value = (findViewById<TextView>(R.id.Output).text.toString().toLong() / 10).toDouble()
+                value =
+                    (findViewById<TextView>(R.id.Output).text.toString().toLong() / 10).toDouble()
                 findViewById<TextView>(R.id.Output).text = value.toLong().toString()
             }
         }
@@ -260,7 +270,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("CutPasteId")
     private fun changeOperatorButtonAction() {
         // 演算子が押されていないときだけ動作するように。
-        if(flagOperation == Flag.NotPressed){
+        if (flagOperation == Flag.NotPressed) {
             value = findViewById<TextView>(R.id.Output).text.toString().toDouble() * (-1)
             findViewById<TextView>(R.id.Output).text = if (flagDecimal == Flag.Pressed) {
                 // 小数の場合
@@ -273,7 +283,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** 小数点ボタンが押された時の処理 */
-    private fun decimalButtonAction(){
+    private fun decimalButtonAction() {
         if (flagEqual == Flag.Pressed) {
             // 実行ボタンが押された直後に、小数点ボタンが押されたら、「0.」を表示する。
             flagDecimal = Flag.Pressed
@@ -284,7 +294,8 @@ class MainActivity : AppCompatActivity() {
             if (flagDecimal == Flag.NotPressed) {
                 // 値がまだ小数でないときにだけ、小数点を付ける。
                 flagDecimal = Flag.Pressed
-                findViewById<TextView>(R.id.Output).text = findViewById<TextView>(R.id.Output).text.toString().plus(".")
+                findViewById<TextView>(R.id.Output).text =
+                    findViewById<TextView>(R.id.Output).text.toString().plus(".")
             }
         }
     }
