@@ -284,8 +284,8 @@ class MainActivity : AppCompatActivity() {
 
     /** 小数点ボタンが押された時の処理 */
     private fun decimalButtonAction() {
-        if (flagEqual == Flag.Pressed) {
-            // 実行ボタンが押された直後に、小数点ボタンが押されたら、「0.」を表示する。
+        if (flagEqual == Flag.Pressed || flagOperation == Flag.Pressed) {
+            // 実行ボタンまたは演算子ボタンが押された直後に、小数点ボタンが押されたら、「0.」を表示する。
             flagDecimal = Flag.Pressed
             value = 0.0
             findViewById<TextView>(R.id.Output).text = value.toLong().toString().plus(".")
