@@ -27,4 +27,5 @@
     <string name="instruction_title">12桁表示</string>
     <string name="dialog_FlowErrorTitle">12桁以上は表示できません</string>
     <string name="dialog_NaNErrorTitle">0同士の除算はできません</string>
+    <string name="btn_cc">Change Color</string>
 </resources>

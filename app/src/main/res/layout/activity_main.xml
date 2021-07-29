@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
     android:orientation="vertical"
+    android:id="@+id/LL1"
     tools:ignore="RtlHardcoded">
 
     <TextView
@@ -15,6 +16,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         android:ems="10"
+        android:id="@+id/calculator"
         android:gravity="center_horizontal"
         android:text="@string/dp_name"
         android:textColor="@color/titleColor"
@@ -373,12 +375,25 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_CC"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/buttonColor"
+        android:text="@string/btn_cc"
+        android:onClick="buttonPress"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:rippleColor="@color/buttonClickColor" />
+
     <TextView
         android:id="@+id/Instruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="30dp"
         android:text="@string/instruction_title"
         android:textColor="@color/buttonColor"
         android:textSize="20sp" />

@@ -1,9 +1,11 @@
 package com.example.calculation_decimal_flagenum
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import kotlin.math.pow
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity() {
             R.id.btn_equal -> equalButtonAction()
             R.id.btn_back -> backButtonAction()
             R.id.btn_decimalPoint -> decimalButtonAction()
+            R.id.btn_CC -> colorChangeAction()
         }
     }
 
@@ -298,5 +301,30 @@ class MainActivity : AppCompatActivity() {
                     findViewById<TextView>(R.id.Output).text.toString().plus(".")
             }
         }
+    }
+
+    /** 下記メソッドで使用
+     * ボタン押す前が春なので、
+     * 初期値は夏（1）にする。
+     *  0:春
+     *  1:夏
+     *  2:秋
+     *  3:冬
+     *  */
+    private var flagColor = 1
+
+    /** 背景と文字の色を変える処理 */
+    private fun colorChangeAction() {
+        when(flagColor) {
+            0 -> { findViewById<LinearLayout>(R.id.LL1).setBackgroundColor(Color.rgb(255,255,255))
+                   findViewById<TextView>(R.id.calculator).setTextColor(Color.rgb(243,166,189))}
+            1 -> { findViewById<LinearLayout>(R.id.LL1).setBackgroundColor(Color.rgb(214,240,248))
+                   findViewById<TextView>(R.id.calculator).setTextColor(Color.rgb(132,138,239)) }
+            2 -> { findViewById<LinearLayout>(R.id.LL1).setBackgroundColor(Color.rgb(241,215,188))
+                findViewById<TextView>(R.id.calculator).setTextColor(Color.rgb(246,142,101)) }
+            3 -> { findViewById<LinearLayout>(R.id.LL1).setBackgroundColor(Color.rgb(227,216,243))
+                findViewById<TextView>(R.id.calculator).setTextColor(Color.rgb(165,112,243)) }
+        }
+        flagColor = (flagColor + 1) % 4
     }
 }
