@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
     /** 一時的に値を入れておく変数 */
     private var value = 0.0
 
+    /** 履歴表示用の変数 */
+    private var historyValue = ""
+
     /** 演算子を入れるリスト
      *  + or - or × or ÷ */
     private val operatorList = mutableListOf<Char>()
@@ -108,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         flagEqual = Flag.NotPressed
         findViewById<TextView>(R.id.Output).text = value.toLong().toString()
         findViewById<TextView>(R.id.OutputOperator).text = null
+        historyValue = ""
+        findViewById<TextView>(R.id.HistoryOutput).text = null
     }
 
     /** 数字ボタンが押された時の処理をまとめた関数 */
@@ -205,6 +210,12 @@ class MainActivity : AppCompatActivity() {
     /** 実行ボタン"="が押された時の処理 */
     private fun equalButtonAction() {
         if (valueList.size > 0 && operatorList.size > 0 && flagOperation == Flag.NotPressed) {
+            historyValue += if (findViewById<TextView>(R.id.Output).text.toString().toDouble() < 0){
+                "(" + findViewById<TextView>(R.id.Output).text.toString() + ")" + "="
+            } else {
+                findViewById<TextView>(R.id.Output).text.toString() + "="
+            }
+            findViewById<TextView>(R.id.HistoryOutput).text = historyValue
             calculation()
             value = 0.0
             valueList.clear()
@@ -212,6 +223,7 @@ class MainActivity : AppCompatActivity() {
             flagEqual = Flag.Pressed
             flagOperation = Flag.NotPressed
             findViewById<TextView>(R.id.OutputOperator).text = null
+            historyValue = ""
         }
     }
 
@@ -223,8 +235,16 @@ class MainActivity : AppCompatActivity() {
             if (flagEqual == Flag.Pressed) {
                 // 実行ボタンが押された直後に、演算子ボタンが押された場合
                 valueList.add(findViewById<TextView>(R.id.Output).text.toString().toDouble())
+                historyValue += findViewById<TextView>(R.id.Output).text.toString() + operatorList.last()
+                findViewById<TextView>(R.id.HistoryOutput).text = historyValue
             } else {
                 // 数字ボタンが押された後、演算子ボタンが押された場合
+                historyValue += if (findViewById<TextView>(R.id.Output).text.toString().toDouble() < 0 && historyValue != ""){
+                    "(" + findViewById<TextView>(R.id.Output).text.toString() + ")" + operatorList.last()
+                } else {
+                    findViewById<TextView>(R.id.Output).text.toString() + operatorList.last()
+                }
+                findViewById<TextView>(R.id.HistoryOutput).text = historyValue
                 calculation()
             }
             value = 0.0
@@ -235,6 +255,9 @@ class MainActivity : AppCompatActivity() {
                 // 演算子ボタンが2回連続で押された場合
                 operatorList.removeAt(operatorList.size - 1)
                 operatorList.add(op)
+                historyValue = historyValue.substring(0,historyValue.length - 1)
+                historyValue += operatorList.last()
+                findViewById<TextView>(R.id.HistoryOutput).text = historyValue
             }
         }
     }
